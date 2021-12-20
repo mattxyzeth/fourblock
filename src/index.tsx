@@ -1,5 +1,25 @@
 import ReactDOM from 'react-dom'
 
+import ClientProvider from './components/ClientProvider'
 import App from './App'
 
-ReactDOM.render(<App />, document.querySelector('#app'))
+import EthClient from './EthClient'
+
+import { abi } from './abi/FourBlock.json'
+
+const contractAddress = 'replaceContractAddress'
+
+const AppWithProviders = () => {
+  const client = new EthClient({
+    contractAddress,
+    abi
+  })
+
+  return (
+    <ClientProvider client={client}>
+      <App />
+    </ClientProvider>
+  )
+}
+
+ReactDOM.render(<AppWithProviders />, document.querySelector('#app'))

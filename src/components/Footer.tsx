@@ -1,8 +1,9 @@
 import styled from 'styled-components'
 
-const ShoutOut = styled.h3`
+const ShoutOut = styled.footer`
   bottom: 0;
   font-size: 1em;
+  font-weight: 700;
   padding: 12px;
   position: fixed;
   text-align: center;
@@ -21,10 +22,12 @@ const BSGrad = styled.span`
   background-origin: initial;
   background-color: initial;
   background-clip: text;
+  text-decoration: none;
+  -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 `
-const BSLogo = styled.span`
+const BSLogo = styled.i`
   color: rgb(157, 142, 238);
 `
 
-export default () => <ShoutOut>built with <BSGrad><BSLogo>buildspace</BSLogo></BSGrad> 🦄</ShoutOut>
+export default () => <ShoutOut>built with <BSGrad>buildspace</BSGrad> 🦄</ShoutOut>

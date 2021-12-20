@@ -4,12 +4,19 @@ import commonjs from '@rollup/plugin-commonjs';
 import inject from '@rollup/plugin-inject';
 import typescript from '@rollup/plugin-typescript';
 import html from '@rollup/plugin-html';
+import json from '@rollup/plugin-json'
+
 import { terser } from 'rollup-plugin-terser';
 import serve from 'rollup-plugin-serve';
 import livereload from 'rollup-plugin-livereload';
 import scss from 'rollup-plugin-scss';
+
 import postcss from 'postcss';
 import autoprefixer from 'autoprefixer';
+import yaml from 'js-yaml'
+import fs from 'fs'
+
+const { mapBoxToken } = yaml.load(fs.readFileSync('./secrets.yml', 'utf8'))
 
 const isProd = process.env.NODE_ENV === 'production';
 const extensions = ['.js', '.ts', '.jsx', '.tsx'];
@@ -31,7 +38,13 @@ export default {
       preventAssignment: true,
       values: {
         'process.env.NODE_ENV': JSON.stringify(isProd ? 'production' : 'development'),
+        mapBoxToken: mapBoxToken,
+        replaceContractAddress: '0xb36f0F6012C4514dbc830bCac43578Db3bA086F9'
        }
+    }),
+    json({
+      compact: isProd,
+      namedExports: true
     }),
     resolve({
       extensions,
@@ -48,7 +61,7 @@ export default {
     }),
     html({
       fileName: 'index.html',
-      title: 'FourBlock - Shameless Web3 FourSquare knock-off',
+      title: 'FourBlock -  Location Check-In dApp',
       template: ({ files, title }) => {
         return `
 <!DOCTYPE html>
@@ -56,6 +69,7 @@ export default {
 <head>
   <meta charset="utf-8">
   <title>${title}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
   <link rel="stylesheet" href="./app.css">
 </head>
 <body>

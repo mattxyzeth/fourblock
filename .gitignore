@@ -6,6 +6,7 @@ typechain
 .DS_Store
 dist/*
 public/*
+secrets.yml
 
 #Hardhat files
 cache

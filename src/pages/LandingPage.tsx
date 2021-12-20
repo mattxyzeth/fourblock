@@ -3,8 +3,7 @@ import styled from 'styled-components'
 import { GradText } from '../styles/globals'
 
 const Hero = styled.div`
-  margin: 0 auto;
-  padding-top: 120px;
+  flex: 0 1 auto;
   width: 600px;
 
   @media (max-width: 515px) {
@@ -20,7 +19,7 @@ const Header = styled.h1`
   margin: 0;
   text-align: center;
 
-  @media (max-width: 320) {
+  @media (max-width: 320px) {
     font-size: 2em;
   }
 
@@ -36,7 +35,7 @@ const Synops = styled.p`
   padding: 12px;
   text-align: center;
 
-  @media (max-width: 320) {
+  @media (max-width: 320px) {
     font-size: 1.8em;
   }
 
@@ -51,7 +50,7 @@ const LandingPage = () => {
       <Header>
         💠 FourBlock
       </Header>
-      <Synops>A decentralized Web3 location check-in app reminiscent of Foursquare.</Synops>
+      <Synops>A location check-in dApp reminiscent of Foursquare.</Synops>
     </Hero>
   )
 }
