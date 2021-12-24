@@ -12,8 +12,16 @@ export interface StatsControl extends StatsType {
   updateStats: (stats: Partial<StatsType>) => any
 }
 
+export interface CheckInType {
+  lat: number,
+  lon: number,
+  time: number
+}
+
 export interface ContextType {
   client: EthClient,
   stats: StatsType,
-  updateStats: (stats: Partial<StatsType>) => any
+  checkIns: [CheckInType],
+  updateStats: (stats: Partial<StatsType>) => any,
+  addCheckIn: (stats: CheckInType) => any,
 }

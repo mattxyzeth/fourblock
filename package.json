@@ -6,7 +6,10 @@
   "scripts": {
     "start": "rollup -c rollup.config.js -w",
     "build": "NODE_ENV=production rollup -c rollup.config.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "serve:prod": "NODE_ENV=production pm2 start --name fourblock --log server.log ./server/index.mjs",
+    "serve:dev": "pm2 start --watch --name fourblock --log server.log ./server/index.mjs && tail -f server.log",
+    "stop": "pm2 stop all && rm -rf server.log"
   },
   "keywords": [],
   "author": "",
@@ -42,12 +45,17 @@
   },
   "dependencies": {
     "boring-avatars": "^1.5.8",
+    "express": "^4.17.2",
+    "ipfs-core": "^0.13.0",
+    "it-all": "^1.0.6",
     "leaflet": "^1.7.1",
+    "pm2": "^5.1.2",
     "react": "^17.0.2",
     "react-dom": "^17.0.2",
     "react-router": "^6.2.1",
     "react-router-dom": "^6.2.1",
     "rollup-plugin-copy": "^3.4.0",
-    "styled-components": "^5.3.3"
+    "styled-components": "^5.3.3",
+    "uint8arrays": "^3.0.0"
   }
 }

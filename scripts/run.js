@@ -10,27 +10,21 @@ const main = async () => {
   let checkInCount;
   checkInCount = await fourBlockContract.getTotalCheckIns();
 
-  let fourBlockTxn = await fourBlockContract.checkIn();
+  let fourBlockTxn = await fourBlockContract.checkIn('45.2766731', '-75.9286733');
   await fourBlockTxn.wait();
 
   checkInCount = await fourBlockContract.getTotalCheckIns();
 
-  fourBlockTxn = await fourBlockContract.connect(randomPerson).checkIn();
+  fourBlockTxn = await fourBlockContract.connect(randomPerson).checkIn('43.6610569', '-79.311963');
   await fourBlockTxn.wait();
 
   checkInCount = await fourBlockContract.getTotalCheckIns();
 
-  let ownerCheckInCount = await fourBlockContract.checkInCountByAddress(owner.address)
-  console.log(`${owner.address} has checked in ${ownerCheckInCount} times`)
+  mem1checkIns = await fourBlockContract.getCheckIns()
+  console.log(mem1checkIns)
 
-  fourBlockTxn = await fourBlockContract.checkIn();
-  await fourBlockTxn.wait();
-
-  ownerCheckInCount = await fourBlockContract.checkInCountByAddress(owner.address)
-  console.log(`${owner.address} has checked in ${ownerCheckInCount} times`)
-
-  let randPerCheckInCount = await fourBlockContract.checkInCountByAddress(randomPerson.address)
-  console.log(`${randomPerson.address} has checked in ${randPerCheckInCount} times`)
+  mem2checkIns = await fourBlockContract.connect(randomPerson).getCheckIns()
+  console.log(mem2checkIns)
 };
 
 const runMain = async () => {

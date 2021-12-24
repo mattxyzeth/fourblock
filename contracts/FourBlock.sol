@@ -6,16 +6,31 @@ import "hardhat/console.sol";
 
 contract FourBlock {
     uint256 totalCheckIns;
-    mapping(address => uint256) public checkInCountByAddress;
+
+    event NewCheckIn(address indexed from, uint256 timestamp, string lat, string lon);
+
+    struct CheckIn {
+      string lat;
+      string lon;
+      uint256 timestamp;
+    }
+
+    mapping(address => CheckIn[]) public checkIns;
 
     constructor() {
         console.log("FourBlock - Check-In contract has been deployed.");
     }
 
-    function checkIn() public {
+    function checkIn(string memory lat, string memory lon) public {
         totalCheckIns += 1;
-        checkInCountByAddress[msg.sender] += 1;
-        console.log("%s has checked in!", msg.sender);
+
+        checkIns[msg.sender].push(CheckIn(lat, lon, block.timestamp));
+
+        emit NewCheckIn(msg.sender, block.timestamp, lat, lon);
+    }
+
+    function getCheckIns() public view returns (CheckIn[] memory) {
+      return checkIns[msg.sender];
     }
 
     function getTotalCheckIns() public view returns (uint256) {

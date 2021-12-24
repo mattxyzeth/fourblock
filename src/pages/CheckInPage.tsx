@@ -118,6 +118,7 @@ const CheckInPage = () => {
   const [error, setError] = useState<string | null>(null)
   const [confirming, setConfirming] = useState<boolean>(false)
   const [avatarSize, setAvatarSize] = useState<number>(120)
+  const [currentLoc, setCurrentLoc] = useState<[number, number]>()
 
   const checkIn = useCallback(async (event: PointerEvent<HTMLButtonElement>) => {
     const [error, txn] = await resolver<TransactionResponse>(client.checkIn())
@@ -139,6 +140,10 @@ const CheckInPage = () => {
       }
     }
   }, [])
+
+  const getCheckIns = useCallback(async () => {
+    // get checkins from contract
+  }, [client.account])
 
   const resizeAvatar = useCallback(() => {
     if (window.innerWidth < 516) {

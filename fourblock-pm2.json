@@ -1,0 +1,20 @@
+{
+  "script": "./server/index.mjs",
+  "name": "fourblock",
+  "filter_env": [],
+  "namespace": "default",
+  "log_file": "server.log",
+  "env": {},
+  "merge_logs": true,
+  "vizion": true,
+  "autorestart": true,
+  "watch": false,
+  "instance_var": "NODE_APP_INSTANCE",
+  "pmx": true,
+  "automation": true,
+  "treekill": true,
+  "username": "me",
+  "windowsHide": true,
+  "kill_retry_time": 100,
+  "write": true
+}

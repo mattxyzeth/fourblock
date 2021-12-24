@@ -1,6 +1,6 @@
 import ReactDOM from 'react-dom'
 
-import ClientProvider from './components/ClientProvider'
+import ContextProvider from './components/ContextProvider'
 import App from './App'
 
 import EthClient from './EthClient'
@@ -16,9 +16,9 @@ const AppWithProviders = () => {
   })
 
   return (
-    <ClientProvider client={client}>
+    <ContextProvider client={client}>
       <App />
-    </ClientProvider>
+    </ContextProvider>
   )
 }
 

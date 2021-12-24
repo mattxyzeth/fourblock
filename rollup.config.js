@@ -26,7 +26,7 @@ export default {
     './src/index.tsx'
   ],
   output: {
-    file: isProd ? './dist/app.js' : './public/app.js',
+    file: isProd ? './dist/assets/app.js' : './public/app.js',
     format: 'iife',
     sourcemap: !isProd
   },
@@ -39,7 +39,7 @@ export default {
       values: {
         'process.env.NODE_ENV': JSON.stringify(isProd ? 'production' : 'development'),
         mapBoxToken: mapBoxToken,
-        replaceContractAddress: '0xb36f0F6012C4514dbc830bCac43578Db3bA086F9'
+        replaceContractAddress: '0x97Cb929629b897ef48CC468893d4eF0952566C09'
        }
     }),
     json({
@@ -54,7 +54,7 @@ export default {
     }),
     scss({
       processor: () => postcss([autoprefixer()]),
-      output: isProd ? './dist/app.css' : './public/app.css'
+      output: isProd ? './dist/assets/app.css' : './public/app.css'
     }),
     inject({
       React: 'react'

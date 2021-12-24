@@ -3,14 +3,19 @@ import { FC, useCallback, useEffect, useState } from 'react'
 import Context from '../context'
 import { resolver } from '../utils/async'
 
-import { StatsType, ContextType } from '../types'
+import { CheckInType, StatsType, ContextType } from '../types'
 
 export interface ClientProviderProps {
   client: any,
 }
 
-const ClientProvider: FC<ClientProviderProps> = ({ children, client }) => {
+const ContextProvider: FC<ClientProviderProps> = async ({ children, client }) => {
   const [stats, setStats] = useState<StatsType>({ totalCount: client.totalCount })
+  const [checkIns, setCheckIns] = useState<[CheckInType?]>([])
+
+  const addCheckIn = useCallback((checkIn: CheckInType) => {
+    setCheckIns([...checkIns, checkIn])
+  }, [checkIns])
 
   const updateStats = useCallback((newStats: Partial<StatsType>) => {
     setStats({ ...stats, ...newStats })
@@ -33,10 +38,12 @@ const ClientProvider: FC<ClientProviderProps> = ({ children, client }) => {
   const ctx: ContextType = {
     client,
     stats,
-    updateStats
+    updateStats,
+    checkIns,
+    addCheckIn
   }
 
   return <Context.Provider value={ctx}>{children}</Context.Provider>
 }
 
-export default ClientProvider
+export default ContextProvider
