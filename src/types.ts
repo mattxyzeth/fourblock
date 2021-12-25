@@ -9,7 +9,8 @@ export interface StatsType {
 }
 
 export interface StatsControl extends StatsType {
-  updateStats: (stats: Partial<StatsType>) => any
+  updateStats: (stats: Partial<StatsType>) => any,
+  getInitialStats: () => void
 }
 
 export interface CheckInType {
@@ -21,7 +22,8 @@ export interface CheckInType {
 export interface ContextType {
   client: EthClient,
   stats: StatsType,
-  checkIns: [CheckInType],
+  checkIns: CheckInType[],
   updateStats: (stats: Partial<StatsType>) => any,
+  getInitialStats: () => void,
   addCheckIn: (stats: CheckInType) => any,
 }

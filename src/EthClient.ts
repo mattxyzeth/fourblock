@@ -97,8 +97,6 @@ class EthClient {
 
     const [error, count] = await resolver<BigNumber>(this.contract.getTotalCheckIns())
 
-    console.log(error, count)
-
     if (error) {
       throw error
     } else if (count === undefined) {

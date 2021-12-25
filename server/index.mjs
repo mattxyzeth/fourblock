@@ -1,15 +1,16 @@
 import express from 'express'
-import * as IPFS from 'ipfs-core'
+//import * as IPFS from 'ipfs-core'
+import { create } from 'ipfs-http-client'
 import { toString as uint8ArrayToString } from 'uint8arrays/to-string'
 import { concat as uint8ArrayConcat } from 'uint8arrays/concat'
 import all from 'it-all'
 
 const app = express()
-let ipfs;
+const ipfs = create()
 
-const assetsDir = 'QmdtGyJftrAfuLD84fxtBb8zgaBevrpmJJYbpbFLLSL5yS'
+const assetsDir = 'QmedMmX3DpjvjQjHjmnVcW1NUXBHxPwErwVUxcYFgtipka'
 
-app.get('*', async (req, res) => {
+app.get(/\/(app\.(j|cs)s)?$/, async (req, res) => {
   let path = `/ipfs/${assetsDir}`
   let contentType = 'text/html'
 
@@ -32,12 +33,11 @@ app.get('*', async (req, res) => {
   res.send(uint8ArrayToString(data))
 })
 
-let port = 8080
+let port = 3000
 if (process.env.NODE_ENV === 'production') {
   port = 80
 }
 
 app.listen(port, async () => {
-  ipfs = await IPFS.create()
   console.log('Fourblock server running on port', port)
 })

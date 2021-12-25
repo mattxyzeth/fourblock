@@ -7,6 +7,7 @@ import Footer from './components/Footer'
 import Button from './components/Button'
 
 import useClient from './hooks/use-client'
+import useStats from './hooks/use-stats'
 import { resolver } from './utils/async'
 
 import './styles/base.scss'
@@ -27,6 +28,8 @@ const Alert = styled.h2`
 
 const App = () => {
   const client = useClient()
+  const { getInitialStats } = useStats()
+
   const [hasAccount, setHasAccount] = useState<boolean>(Boolean(client.account))
   const [accountError, setAccountError] = useState<string | null>(null)
   const [walletError, setWalletError] = useState<string | null>(null)
@@ -39,6 +42,7 @@ const App = () => {
       setAccountError("There was an issue connecting your wallet.")
     } else {
       setHasAccount(true)
+      getInitialStats()
     }
   }, [])
 

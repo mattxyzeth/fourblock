@@ -5,13 +5,13 @@ import { resolver } from '../utils/async'
 
 import { CheckInType, StatsType, ContextType } from '../types'
 
-export interface ClientProviderProps {
+export interface ContextProviderProps {
   client: any,
 }
 
-const ContextProvider: FC<ClientProviderProps> = async ({ children, client }) => {
+const ContextProvider: FC<ContextProviderProps> = ({ children, client }) => {
   const [stats, setStats] = useState<StatsType>({ totalCount: client.totalCount })
-  const [checkIns, setCheckIns] = useState<[CheckInType?]>([])
+  const [checkIns, setCheckIns] = useState<CheckInType[]>([] as CheckInType[])
 
   const addCheckIn = useCallback((checkIn: CheckInType) => {
     setCheckIns([...checkIns, checkIn])
@@ -31,14 +31,11 @@ const ContextProvider: FC<ClientProviderProps> = async ({ children, client }) =>
     }
   }, [])
 
-  useEffect(() => {
-    getInitialStats()
-  }, [])
-
   const ctx: ContextType = {
     client,
     stats,
     updateStats,
+    getInitialStats,
     checkIns,
     addCheckIn
   }
