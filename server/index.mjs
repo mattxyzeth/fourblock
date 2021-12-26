@@ -35,7 +35,7 @@ app.get(/\/(app\.(j|cs)s)?$/, async (req, res) => {
 
 let port = 3000
 if (process.env.NODE_ENV === 'production') {
-  port = 80
+  port = 443
 }
 
 app.listen(port, async () => {
