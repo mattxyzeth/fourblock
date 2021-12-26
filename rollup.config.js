@@ -26,7 +26,7 @@ export default {
     './src/index.tsx'
   ],
   output: {
-    file: isProd ? './dist/assets/app.js' : './public/assets/app.js',
+    file: isProd ? './dist/app.js' : './public/app.js',
     format: 'iife',
     sourcemap: !isProd
   },
@@ -54,7 +54,7 @@ export default {
     }),
     scss({
       processor: () => postcss([autoprefixer()]),
-      output: isProd ? './dist/assets/app.css' : './public/assets/app.css'
+      output: isProd ? './dist/app.css' : './public//app.css'
     }),
     inject({
       React: 'react'
@@ -70,11 +70,11 @@ export default {
   <meta charset="utf-8">
   <title>${title}</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
-  <link rel="stylesheet" href="/assets/app.css">
+  <link rel="stylesheet" href="/app.css">
 </head>
 <body>
   <div id="app"></div>
-  <script src="/assets/app.js"></script>
+  <script src="/app.js"></script>
 </body>
 </html>
 `;
