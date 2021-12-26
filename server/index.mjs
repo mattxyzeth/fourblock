@@ -8,7 +8,7 @@ import all from 'it-all'
 const app = express()
 const ipfs = create()
 
-const assetsDir = 'QmedMmX3DpjvjQjHjmnVcW1NUXBHxPwErwVUxcYFgtipka'
+const assetsDir = process.env.ASSETS_DIR
 
 app.get(/\/(app\.(j|cs)s)?$/, async (req, res) => {
   let path = `/ipfs/${assetsDir}`
