@@ -123,8 +123,14 @@ function truncateAccount(account: string): string {
 
 const CheckInPage = () => {
   const client = useClient()
-  const { setLocStatus, currentLoc, setCurrentLoc, addCheckIn } = useCheckIns()
-  const { updateStats } = useStats()
+  const {
+    setLocStatus,
+    currentLoc,
+    setCurrentLoc,
+    addCheckIn,
+    getMemberCheckIns
+  } = useCheckIns()
+  const { getInitialStats, updateStats } = useStats()
   const [error, setError] = useState<string | null>(null)
   const [locError, setLocError] = useState<string | null>(null)
   const [confirming, setConfirming] = useState<boolean>(false)
@@ -187,6 +193,8 @@ const CheckInPage = () => {
 
   useEffect(() => {
     geoInit()
+    getInitialStats()
+    getMemberCheckIns()
     resizeAvatar()
     window.addEventListener('resize', resizeAvatar)
     return () => {

@@ -1,4 +1,4 @@
-import { useContext } from 'react'
+import { useContext, useCallback } from 'react'
 
 import Context from '../context.js'
 import { ContextType, CheckInControl } from '../types'
@@ -12,6 +12,7 @@ export default (): CheckInControl => {
     currentLoc: ctx.currentLoc,
     setCurrentLoc: ctx.setCurrentLoc,
     checkIns: ctx.checkIns,
+    getMemberCheckIns: ctx.getMemberCheckIns,
     addCheckIn: ctx.addCheckIn
   }
 }

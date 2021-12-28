@@ -36,6 +36,7 @@ export interface CheckInControl {
   currentLoc: LocationType | null,
   setCurrentLoc: (loc: LocationType) => void,
   checkIns: CheckInType[],
+  getMemberCheckIns: () => Promise<void>,
   addCheckIn: (stats: CheckInType) => void,
 }
 

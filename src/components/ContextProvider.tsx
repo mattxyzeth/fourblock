@@ -40,7 +40,17 @@ const ContextProvider: FC<ContextProviderProps> = ({ children, client }) => {
     } else {
       updateStats({ totalCount })
     }
-  }, [])
+  }, [client])
+
+  const getMemberCheckIns = useCallback(async () => {
+    const [error, checkIns] = await resolver<CheckInType[]>(client.getMemberCheckIns())
+
+    if (error || checkIns === undefined) {
+      console.error(error || "Check-in's were undefined")
+    } else {
+      setCheckIns(checkIns)
+    }
+  }, [client])
 
   const ctx: ContextType = {
     client,
@@ -49,6 +59,7 @@ const ContextProvider: FC<ContextProviderProps> = ({ children, client }) => {
     currentLoc,
     setCurrentLoc,
     checkIns,
+    getMemberCheckIns,
     addCheckIn,
     stats,
     updateStats,

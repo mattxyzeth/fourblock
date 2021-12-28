@@ -3,13 +3,19 @@ import { JsonRpcProvider } from '@ethersproject/providers'
 import { TransactionResponse } from '@ethersproject/abstract-provider'
 
 import { resolver } from './utils/async'
-import { Window, LocationType } from './types'
+import { Window, CheckInType, LocationType } from './types'
 
 declare let window: Window
 
 interface Props {
   contractAddress: string,
   abi: ContractInterface,
+}
+
+interface ContractCheckIn {
+  lat: string,
+  lon: string,
+  timestamp: BigNumber
 }
 
 class EthClient {
@@ -75,7 +81,7 @@ class EthClient {
   }
 
   public async checkIn(loc: LocationType): Promise<TransactionResponse> {
-    if (!this.hasWallet || !this.contract) {
+    if (!this.hasWallet || !this.contract || !this.account) {
       throw new Error("Please connect your wallet")
     }
 
@@ -88,6 +94,32 @@ class EthClient {
     }
 
     return txn
+  }
+
+  public async getMemberCheckIns(): Promise<CheckInType[]> {
+    if (!this.hasWallet || !this.contract || !this.account) {
+      throw new Error("Please connect your wallet")
+    }
+
+    console.log('Fetching member check-ins')
+
+    const [error, contractCheckIns] = await resolver<ContractCheckIn[]>(this.contract.getCheckIns())
+
+    if (error || contractCheckIns === undefined) {
+      throw error
+    }
+
+    return contractCheckIns.map((checkIn: ContractCheckIn) => {
+      const coords: LocationType = [
+        parseFloat(checkIn.lat),
+        parseFloat(checkIn.lon)
+      ]
+
+      return {
+        coords,
+        time: checkIn.timestamp.toNumber()
+      }
+    })
   }
 
   public async getTotalCount(): Promise<number> {

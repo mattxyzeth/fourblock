@@ -9,7 +9,7 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "serve:prod": "NODE_ENV=production pm2 start --name fourblock --log server.log ./server/index.mjs",
     "serve:dev": "pm2 start --watch --name fourblock --log server.log ./server/index.mjs && tail -f server.log",
-    "stop": "pm2 stop all && rm -rf server.log"
+    "stop": "pm2 stop fourblock && pm2 del fourblock && rm -rf server.log"
   },
   "keywords": [],
   "author": "",

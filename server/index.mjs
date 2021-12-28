@@ -10,7 +10,7 @@ const ipfs = create()
 
 const assetsDir = process.env.ASSETS_DIR
 
-app.get(/\/(app\.(j|cs)s)?$/, async (req, res) => {
+app.get(/^\/(app\.(j|cs)s)?$/, async (req, res) => {
   let path = `/ipfs/${assetsDir}`
   let contentType = 'text/html'
 
@@ -26,8 +26,6 @@ app.get(/\/(app\.(j|cs)s)?$/, async (req, res) => {
       contentType = 'text/css'
     }
   }
-
-  console.log(path)
 
   res.setHeader('Content-Type', contentType)
 
