@@ -27,6 +27,8 @@ app.get(/\/(app\.(j|cs)s)?$/, async (req, res) => {
     }
   }
 
+  console.log(path)
+
   res.setHeader('Content-Type', contentType)
 
   const data = uint8ArrayConcat(await all(ipfs.cat(path)))
