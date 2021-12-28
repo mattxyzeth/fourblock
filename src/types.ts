@@ -8,22 +8,37 @@ export interface StatsType {
   totalCount: number
 }
 
-export interface StatsControl extends StatsType {
+export interface StatsControl {
+  stats: StatsType,
   updateStats: (stats: Partial<StatsType>) => any,
   getInitialStats: () => void
 }
 
+export type LocationType = [number, number]
+
 export interface CheckInType {
-  lat: number,
-  lon: number,
+  coords: LocationType,
   time: number
 }
 
-export interface ContextType {
-  client: EthClient,
-  stats: StatsType,
+export const LOC_LOADING = 0
+export const LOC_SUCCESS = 1
+export const LOC_FAILED = 2
+
+export type LocStatus =
+  typeof LOC_LOADING |
+  typeof LOC_SUCCESS |
+  typeof LOC_FAILED
+
+export interface CheckInControl {
+  locStatus: LocStatus,
+  setLocStatus: (status: LocStatus) => void,
+  currentLoc: LocationType | null,
+  setCurrentLoc: (loc: LocationType) => void,
   checkIns: CheckInType[],
-  updateStats: (stats: Partial<StatsType>) => any,
-  getInitialStats: () => void,
-  addCheckIn: (stats: CheckInType) => any,
+  addCheckIn: (stats: CheckInType) => void,
+}
+
+export interface ContextType extends CheckInControl, StatsControl {
+  client: EthClient,
 }

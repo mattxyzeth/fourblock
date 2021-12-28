@@ -4,7 +4,9 @@
   "filter_env": [],
   "namespace": "default",
   "log_file": "server.log",
-  "env": {},
+  "env": {
+    "ASSETS_DIR": "QmUaPxSGiGaPXsEXdPnggC86YYvecyf82DVXhbdXHdsdv7"
+  },
   "merge_logs": true,
   "vizion": true,
   "autorestart": true,

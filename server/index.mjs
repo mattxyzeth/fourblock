@@ -33,6 +33,36 @@ app.get(/\/(app\.(j|cs)s)?$/, async (req, res) => {
   res.send(uint8ArrayToString(data))
 })
 
+const imageMimes = {
+  png: 'image/png',
+  jpg: 'image/jpeg',
+  jpeg: 'image/jpeg',
+  gif: 'image/gif',
+  svg: 'image/svg+xml'
+}
+
+app.get("/images/:file", async (req, res) => {
+  const ext = req.params.file.split('.')[1]
+
+  if (ext) {
+    const contentType = imageMimes[ext.toLowerCase()]
+
+    if (contentType) {
+      try {
+        const data = uint8ArrayConcat(await all(ipfs.cat(path)))
+        res.setHeader('Content-Type', contentType)
+        res.send(uint8ArrayToString(data))
+      } catch(e) {
+        res.sendStatus(404)
+      }
+    } else {
+      res.sendStatus(404)
+    }
+  } else {
+    res.sendStatus(500)
+  }
+})
+
 let port = 3000
 if (process.env.NODE_ENV === 'production') {
   port = 80

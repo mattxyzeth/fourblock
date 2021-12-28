@@ -8,11 +8,11 @@ export interface StatsProps {
 }
 
 const Stats: FC<StatsProps> = ({ className }) => {
-  const { totalCount } = useStats()
+  const { stats } = useStats()
 
   return (
     <p className={className}>
-      {totalCount} check-in's and counting!
+      {stats.totalCount} check-in's and counting!
     </p>
   )
 }

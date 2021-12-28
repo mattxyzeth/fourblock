@@ -5,6 +5,7 @@ import inject from '@rollup/plugin-inject';
 import typescript from '@rollup/plugin-typescript';
 import html from '@rollup/plugin-html';
 import json from '@rollup/plugin-json'
+import url from '@rollup/plugin-url'
 
 import { terser } from 'rollup-plugin-terser';
 import serve from 'rollup-plugin-serve';
@@ -55,6 +56,24 @@ export default {
     scss({
       processor: () => postcss([autoprefixer()]),
       output: isProd ? './dist/app.css' : './public//app.css'
+    }),
+    url({
+      // Where to put files
+      destDir: 'dist/images/',
+      // Path to put infront of files (in code)
+      publicPath: process.env.NODE_ENV === "development"
+      ? 'http://localhost:8000/dist/images/'
+      : '/images/',
+      // File name once copied
+      fileName: '[name][extname]',
+      // Kinds of files to process
+      include: [
+        '**/*.svg',
+        '**/*.png',
+        '**/*.gif',
+        '**/*.jpg',
+        '**/*.jpeg',
+      ]
     }),
     inject({
       React: 'react'

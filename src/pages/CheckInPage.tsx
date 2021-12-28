@@ -6,9 +6,12 @@ import { TransactionResponse } from '@ethersproject/abstract-provider'
 import { resolver } from '../utils/async'
 import useClient from '../hooks/use-client'
 import useStats from '../hooks/use-stats'
+import useCheckIns from '../hooks/use-checkins'
 import Map from '../components/Map'
 import Stats from '../components/Stats'
 import Button from '../components/Button'
+
+import { LocationType, LOC_SUCCESS, LOC_FAILED, LOC_LOADING } from '../types'
 
 const PageContainer = styled.div`
   align-items: stretch;
@@ -108,42 +111,49 @@ const CheckInBtn = styled(Button)`
   }
 `
 
+const LocError = styled.p`
+  color: red;
+  margin: 0;
+  text-align: center;
+`
+
 function truncateAccount(account: string): string {
   return account.substring(0, 5) + '...' + account.substring(account.length - 5)
 }
 
 const CheckInPage = () => {
   const client = useClient()
+  const { setLocStatus, currentLoc, setCurrentLoc, addCheckIn } = useCheckIns()
   const { updateStats } = useStats()
   const [error, setError] = useState<string | null>(null)
+  const [locError, setLocError] = useState<string | null>(null)
   const [confirming, setConfirming] = useState<boolean>(false)
   const [avatarSize, setAvatarSize] = useState<number>(120)
-  const [currentLoc, setCurrentLoc] = useState<[number, number]>()
 
   const checkIn = useCallback(async (event: PointerEvent<HTMLButtonElement>) => {
-    const [error, txn] = await resolver<TransactionResponse>(client.checkIn())
+    if (currentLoc) {
+      const [error, txn] = await resolver<TransactionResponse>(client.checkIn(currentLoc))
 
-    if (error || txn === undefined) {
-      console.error(error || "txn undefined")
-      setError((error && error.message) || "Something went wrong")
-    } else {
-      setConfirming(true)
-      await txn.wait()
-      setConfirming(false)
-
-      const [error, totalCount] = await resolver<number>(client.getTotalCount())
-
-      if (error || totalCount === undefined) {
-        console.error(error || "Could not fetch totalCount")
+      if (error || txn === undefined) {
+        console.error(error || "txn undefined")
+        setError((error && error.message) || "Something went wrong")
       } else {
-        updateStats({ totalCount })
-      }
-    }
-  }, [])
+        setConfirming(true)
+        await txn.wait()
+        setConfirming(false)
 
-  const getCheckIns = useCallback(async () => {
-    // get checkins from contract
-  }, [client.account])
+        const [error, totalCount] = await resolver<number>(client.getTotalCount())
+
+        if (error || totalCount === undefined) {
+          console.error(error || "Could not fetch totalCount")
+        } else {
+          updateStats({ totalCount })
+        }
+      }
+    } else {
+      setError('Please allow your browser to capture your current location')
+    }
+  }, [currentLoc])
 
   const resizeAvatar = useCallback(() => {
     if (window.innerWidth < 516) {
@@ -153,7 +163,30 @@ const CheckInPage = () => {
     }
   }, [avatarSize])
 
+  const handleGeoLoc = useCallback((pos: GeolocationPosition) => {
+    const coords: LocationType = [pos.coords.latitude, pos.coords.longitude]
+    console.log(coords)
+    setLocStatus(LOC_SUCCESS)
+    setCurrentLoc(coords)
+  }, [])
+
+  const handleLocError = useCallback((err: GeolocationPositionError) => {
+    // TODO: could use the code property to trigger different error UI
+    setLocStatus(LOC_FAILED)
+    setError(err.message)
+  }, [])
+
+  const geoInit = useCallback(() => {
+    if (navigator.geolocation) {
+      setLocStatus(LOC_LOADING)
+      navigator.geolocation.getCurrentPosition(handleGeoLoc, handleLocError)
+    } else {
+      setLocError('Location data is not supported.')
+    }
+  }, [])
+
   useEffect(() => {
+    geoInit()
     resizeAvatar()
     window.addEventListener('resize', resizeAvatar)
     return () => {
@@ -177,12 +210,14 @@ const CheckInPage = () => {
             </AvatarContainer>
             <Account>{truncateAccount(client.account || '')}</Account>
           </AccountContainer>
-          <CheckInBtn disabled={confirming} onClick={checkIn}>
-            {confirming
-              ? "Confirming..."
-              : "Check In"
-            }
-          </CheckInBtn>
+          {locError
+            ? <LocError>{locError}</LocError>
+            : (
+              <CheckInBtn disabled={confirming} onClick={checkIn}>
+                {confirming ? "Confirming..." : "Check In"}
+              </CheckInBtn>
+            )
+          }
         </UIContainer>
       </SideBar>
       <Map />

@@ -7,7 +7,7 @@ export default (): StatsControl  => {
   const ctx = useContext<ContextType>(Context)
 
   return {
-    ...ctx.stats,
+    stats: ctx.stats,
     updateStats: ctx.updateStats,
     getInitialStats: ctx.getInitialStats
   }

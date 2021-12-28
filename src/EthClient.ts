@@ -3,7 +3,7 @@ import { JsonRpcProvider } from '@ethersproject/providers'
 import { TransactionResponse } from '@ethersproject/abstract-provider'
 
 import { resolver } from './utils/async'
-import { Window } from './types'
+import { Window, LocationType } from './types'
 
 declare let window: Window
 
@@ -74,12 +74,14 @@ class EthClient {
     return false
   }
 
-  public async checkIn(): Promise<TransactionResponse> {
+  public async checkIn(loc: LocationType): Promise<TransactionResponse> {
     if (!this.hasWallet || !this.contract) {
       throw new Error("Please connect your wallet")
     }
 
-    const [error, txn] = await resolver<TransactionResponse>(this.contract.checkIn())
+    const coords = loc.map(coord => String(coord))
+
+    const [error, txn] = await resolver<TransactionResponse>(this.contract.checkIn(...coords))
 
     if (error || txn === undefined) {
       throw error || "Transaction not returned"

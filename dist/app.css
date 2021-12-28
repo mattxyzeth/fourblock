@@ -25,6 +25,12 @@ body {
   width: 100vw;
 }
 
+.marker {
+  border: none;
+  background-color: transparent;
+  width: 66px;
+}
+
 /* required styles */
 .leaflet-pane,
 .leaflet-tile,

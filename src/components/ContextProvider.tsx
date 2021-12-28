@@ -3,7 +3,16 @@ import { FC, useCallback, useEffect, useState } from 'react'
 import Context from '../context'
 import { resolver } from '../utils/async'
 
-import { CheckInType, StatsType, ContextType } from '../types'
+import {
+  CheckInType,
+  StatsType,
+  ContextType,
+  LocationType,
+  LocStatus,
+  LOC_LOADING,
+  LOC_SUCCESS,
+  LOC_FAILED
+} from '../types'
 
 export interface ContextProviderProps {
   client: any,
@@ -12,6 +21,8 @@ export interface ContextProviderProps {
 const ContextProvider: FC<ContextProviderProps> = ({ children, client }) => {
   const [stats, setStats] = useState<StatsType>({ totalCount: client.totalCount })
   const [checkIns, setCheckIns] = useState<CheckInType[]>([] as CheckInType[])
+  const [currentLoc, setCurrentLoc] = useState<LocationType | null>(null)
+  const [locStatus, setLocStatus] = useState<LocStatus>(LOC_LOADING)
 
   const addCheckIn = useCallback((checkIn: CheckInType) => {
     setCheckIns([...checkIns, checkIn])
@@ -33,11 +44,15 @@ const ContextProvider: FC<ContextProviderProps> = ({ children, client }) => {
 
   const ctx: ContextType = {
     client,
+    locStatus,
+    setLocStatus,
+    currentLoc,
+    setCurrentLoc,
+    checkIns,
+    addCheckIn,
     stats,
     updateStats,
     getInitialStats,
-    checkIns,
-    addCheckIn
   }
 
   return <Context.Provider value={ctx}>{children}</Context.Provider>
