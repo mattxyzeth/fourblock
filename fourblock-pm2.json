@@ -5,7 +5,7 @@
   "namespace": "default",
   "log_file": "server.log",
   "env": {
-    "ASSETS_DIR": "QmUaPxSGiGaPXsEXdPnggC86YYvecyf82DVXhbdXHdsdv7"
+    "ASSETS_DIR": "QmQeQozfhzWbwYhJYLedR5PwjtsSZb1USwJqySjUTS4PCq"
   },
   "merge_logs": true,
   "vizion": true,
