@@ -7,11 +7,13 @@ import Footer from './components/Footer'
 import Button from './components/Button'
 
 import useClient from './hooks/use-client'
-import useStats from './hooks/use-stats'
 import { resolver } from './utils/async'
+
+import { Window } from './types'
 
 import './styles/base.scss'
 
+const win: Window = window
 
 const Alert = styled.h2`
   background-color: pink;
@@ -27,54 +29,27 @@ const Alert = styled.h2`
 `
 
 const App = () => {
-  const client = useClient()
-
-  const [hasAccount, setHasAccount] = useState<boolean>(Boolean(client.account))
-  const [accountError, setAccountError] = useState<string | null>(null)
-  const [walletError, setWalletError] = useState<string | null>(null)
-
-  const walletConnect = useCallback(async () => {
-    const [error] = await resolver(client.walletConnect())
-
-    if (error) {
-      console.error(error.message)
-      setAccountError("There was an issue connecting your wallet.")
-    } else {
-      setHasAccount(true)
-    }
-  }, [])
-
-  const checkConnected = useCallback(async () => {
-    if (!hasAccount) {
-      const [error, connected] = await resolver<boolean>(client.checkConnected())
-
-      if (error) {
-        console.error(error)
-        setWalletError(error.message)
-      } else {
-        setHasAccount(Boolean(connected))
-      }
-    }
-  }, [hasAccount])
+  const { connect, wallet } = useClient()
+  const [injected, setInjected] = useState<boolean>(false)
 
   useEffect(() => {
-    checkConnected()
+    console.log(win.ethereum)
+    if (win.ethereum) {
+      setInjected(true)
+    } else {
+      setInjected(false)
+    }
   }, [])
 
   return (
     <>
-      {!hasAccount && <>
+      {!wallet && <>
           <LandingPage />
-          {walletError
-            ? <>
-              <Alert>{walletError}</Alert>
-              <p>Please install MetaMask</p>
-            </>
-            : <Button onClick={walletConnect}>Connect Wallet</Button>
-          }
+          {injected && <Button onClick={() => connect('injected')}>Connect MetaMask</Button>}
+          <Button onClick={() => connect('walletconnect')}>Connect WalletConnect</Button>
         </>
       }
-      {hasAccount && <CheckInPage />}
+      {wallet && <CheckInPage />}
       <Footer />
     </>
   )

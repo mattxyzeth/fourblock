@@ -13,6 +13,6 @@ export default (): CheckInControl => {
     setCurrentLoc: ctx.setCurrentLoc,
     checkIns: ctx.checkIns,
     getMemberCheckIns: ctx.getMemberCheckIns,
-    addCheckIn: ctx.addCheckIn
+    checkIn: ctx.checkIn
   }
 }

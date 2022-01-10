@@ -11,13 +11,14 @@ import { terser } from 'rollup-plugin-terser';
 import serve from 'rollup-plugin-serve';
 import livereload from 'rollup-plugin-livereload';
 import scss from 'rollup-plugin-scss';
+import nodePolyfill from 'rollup-plugin-node-polyfills'
 
 import postcss from 'postcss';
 import autoprefixer from 'autoprefixer';
 import yaml from 'js-yaml'
 import fs from 'fs'
 
-const { mapBoxToken } = yaml.load(fs.readFileSync('./secrets.yml', 'utf8'))
+const { mapBoxToken, infuraId } = yaml.load(fs.readFileSync('./secrets.yml', 'utf8'))
 
 const isProd = process.env.NODE_ENV === 'production';
 const extensions = ['.js', '.ts', '.jsx', '.tsx'];
@@ -29,29 +30,37 @@ export default {
   output: {
     file: isProd ? './dist/app.js' : './public/app.js',
     format: 'iife',
-    sourcemap: !isProd
+    sourcemap: !isProd,
+    inlineDynamicImports: true
   },
+  preserveEntrySignatures: false,
   plugins: [
+    resolve({
+      extensions,
+      mainFields: ['module', 'browser', 'main'],
+      preferBuiltins: false
+    }),
     commonjs({
       include: /node_modules/,
+      transformMixedEsModules: true,
+      defaultIsModuleExports: true
     }),
+    typescript({
+      tsconfig: './tsconfig.json'
+    }),
+    nodePolyfill(),
     replace({
       preventAssignment: true,
       values: {
+        mapBoxToken,
         'process.env.NODE_ENV': JSON.stringify(isProd ? 'production' : 'development'),
-        mapBoxToken: mapBoxToken,
-        replaceContractAddress: '0x97Cb929629b897ef48CC468893d4eF0952566C09'
+        replaceContractAddress: '0x97Cb929629b897ef48CC468893d4eF0952566C09',
+        replaceInfuraId: infuraId
        }
     }),
     json({
       compact: isProd,
       namedExports: true
-    }),
-    resolve({
-      extensions,
-    }),
-    typescript({
-      tsconfig: './tsconfig.json'
     }),
     scss({
       processor: () => postcss([autoprefixer()]),
@@ -89,11 +98,11 @@ export default {
   <meta charset="utf-8">
   <title>${title}</title>
   <meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
-  <link rel="stylesheet" href="/app.css">
+  <link rel="stylesheet" href="app.css">
 </head>
 <body>
   <div id="app"></div>
-  <script src="/app.js"></script>
+  <script src="app.js"></script>
 </body>
 </html>
 `;
@@ -103,7 +112,6 @@ export default {
     (!isProd && serve({
       host: 'localhost',
       port: 3000,
-      open: true,
       contentBase: ['public'],
     })),
     (!isProd && livereload({
