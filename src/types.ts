@@ -1,4 +1,14 @@
-import EthClient from './EthClient'
+import { BigNumber } from 'ethers'
+import { ConnectorOptions } from "@3rdweb/hooks"
+
+export const LOC_LOADING = 0
+export const LOC_SUCCESS = 1
+export const LOC_FAILED = 2
+
+export type LocStatus =
+  typeof LOC_LOADING |
+  typeof LOC_SUCCESS |
+  typeof LOC_FAILED
 
 export interface Window {
   ethereum: any;
@@ -21,15 +31,6 @@ export interface CheckInType {
   time: number
 }
 
-export const LOC_LOADING = 0
-export const LOC_SUCCESS = 1
-export const LOC_FAILED = 2
-
-export type LocStatus =
-  typeof LOC_LOADING |
-  typeof LOC_SUCCESS |
-  typeof LOC_FAILED
-
 export interface CheckInControl {
   locStatus: LocStatus,
   setLocStatus: (status: LocStatus) => void,
@@ -37,9 +38,29 @@ export interface CheckInControl {
   setCurrentLoc: (loc: LocationType) => void,
   checkIns: CheckInType[],
   getMemberCheckIns: () => Promise<void>,
-  addCheckIn: (stats: CheckInType) => void,
+  checkIn: (loc: LocationType) => void,
 }
 
-export interface ContextType extends CheckInControl, StatsControl {
-  client: EthClient,
+interface Balance {
+  value?: BigNumber;
+  formatted: string;
+}
+
+export interface WalletType {
+  address: string,
+  balance: Balance
+}
+
+export interface WalletControl {
+  connect: (conType: keyof ConnectorOptions) => void,
+  disconnect: () => void,
+  wallet?: WalletType
+}
+
+export interface ContextType extends CheckInControl, StatsControl, WalletControl {}
+
+export interface ContractCheckIn {
+  lat: string,
+  lon: string,
+  timestamp: BigNumber
 }

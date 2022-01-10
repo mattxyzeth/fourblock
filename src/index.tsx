@@ -1,24 +1,19 @@
+import 'regenerator-runtime'
+
 import ReactDOM from 'react-dom'
 
-import ContextProvider from './components/ContextProvider'
+import ClientProvider from './components/ClientProvider'
 import App from './App'
-
-import EthClient from './EthClient'
 
 import { abi } from './abi/FourBlock.json'
 
 const contractAddress = 'replaceContractAddress'
 
 const AppWithProviders = () => {
-  const client = new EthClient({
-    contractAddress,
-    abi
-  })
-
   return (
-    <ContextProvider client={client}>
+    <ClientProvider abi={abi} contractAddress={contractAddress}>
       <App />
-    </ContextProvider>
+    </ClientProvider>
   )
 }
 

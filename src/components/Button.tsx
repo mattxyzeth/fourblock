@@ -36,6 +36,7 @@ export default styled(Button)`
   font-weight: 700;
   letter-spacing: -0.011em;
   line-height: 24px;
+  margin-bottom: 12px;
   padding: 16px 48px;
   transition: background 0.5s ease 0s, border-color 0.5s ease 0s, color 0.5s ease 0s;
 

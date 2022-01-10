@@ -1,12 +1,12 @@
 import { FC, useEffect, useCallback, useState, PointerEvent } from 'react'
 import styled from 'styled-components'
-import Avatar from "boring-avatars"
 import { TransactionResponse } from '@ethersproject/abstract-provider'
 
 import { resolver } from '../utils/async'
 import useClient from '../hooks/use-client'
 import useStats from '../hooks/use-stats'
 import useCheckIns from '../hooks/use-checkins'
+import Avatar from '../components/Avatar'
 import Map from '../components/Map'
 import Stats from '../components/Stats'
 import Button from '../components/Button'
@@ -122,52 +122,27 @@ function truncateAccount(account: string): string {
 }
 
 const CheckInPage = () => {
-  const client = useClient()
+  const { wallet } = useClient()
   const {
     setLocStatus,
     currentLoc,
     setCurrentLoc,
-    addCheckIn,
+    checkIn,
     getMemberCheckIns
-  } = useCheckIns()
+  } = useCheckIns();
   const { getInitialStats, updateStats } = useStats()
   const [error, setError] = useState<string | null>(null)
   const [locError, setLocError] = useState<string | null>(null)
   const [confirming, setConfirming] = useState<boolean>(false)
   const [avatarSize, setAvatarSize] = useState<number>(120)
 
-  const checkIn = useCallback(async (event: PointerEvent<HTMLButtonElement>) => {
+  const handleCheckIn = useCallback(async (event: PointerEvent<HTMLButtonElement>) => {
     if (currentLoc) {
-      const [error, txn] = await resolver<TransactionResponse>(client.checkIn(currentLoc))
-
-      if (error || txn === undefined) {
-        console.error(error || "txn undefined")
-        setError((error && error.message) || "Something went wrong")
-      } else {
-        setConfirming(true)
-        await txn.wait()
-        setConfirming(false)
-
-        const [error, totalCount] = await resolver<number>(client.getTotalCount())
-
-        if (error || totalCount === undefined) {
-          console.error(error || "Could not fetch totalCount")
-        } else {
-          updateStats({ totalCount })
-        }
-      }
+      checkIn(currentLoc)
     } else {
       setError('Please allow your browser to capture your current location')
     }
   }, [currentLoc])
-
-  const resizeAvatar = useCallback(() => {
-    if (window.innerWidth < 516) {
-      setAvatarSize(39)
-    } else {
-      setAvatarSize(120)
-    }
-  }, [avatarSize])
 
   const handleGeoLoc = useCallback((pos: GeolocationPosition) => {
     const coords: LocationType = [pos.coords.latitude, pos.coords.longitude]
@@ -192,15 +167,19 @@ const CheckInPage = () => {
   }, [])
 
   useEffect(() => {
-    geoInit()
-    getInitialStats()
-    getMemberCheckIns()
-    resizeAvatar()
-    window.addEventListener('resize', resizeAvatar)
-    return () => {
-      window.removeEventListener('resize', resizeAvatar)
+    if (wallet) {
+      getInitialStats()
+      getMemberCheckIns()
     }
+  }, [wallet])
+
+  useEffect(() => {
+    geoInit()
   }, [])
+
+  if (!wallet) {
+    return <p>Loading...</p>
+  }
 
   return (
     <PageContainer>
@@ -211,17 +190,17 @@ const CheckInPage = () => {
           <AccountContainer>
             <AvatarContainer>
               <Avatar
-                size={avatarSize}
-                variant="marble"
+                name={wallet.address}
+                size={120}
                 colors={["#92A1C6", "#146A7C", "#fd58ff", "#C271B4", "#585bff"]}
               />
             </AvatarContainer>
-            <Account>{truncateAccount(client.account || '')}</Account>
+            <Account>{truncateAccount(wallet.address)}</Account>
           </AccountContainer>
           {locError
             ? <LocError>{locError}</LocError>
             : (
-              <CheckInBtn disabled={confirming} onClick={checkIn}>
+              <CheckInBtn disabled={confirming} onClick={handleCheckIn}>
                 {confirming ? "Confirming..." : "Check In"}
               </CheckInBtn>
             )

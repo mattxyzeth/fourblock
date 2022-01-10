@@ -11,7 +11,7 @@ import 'leaflet/dist/leaflet.css'
 
 const MapContainer = styled.div`
   position: relative;
-  flex: 0 1 80%;
+  flex: 0 1 100%;
 `
 
 const LeafletView = styled.div`
